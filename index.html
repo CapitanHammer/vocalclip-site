@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VocalClip — Discord 30s Voice Clip Bot</title>
+  <style>
+    :root {
+      --bg-dark: #07130e;
+      --bg-card: #0d1f18;
+      --bg-card-2: #122920;
+      --emerald: #10b981;
+      --emerald-bright: #34d399;
+      --gold: #d4af37;
+      --gold-bright: #f3d26b;
+      --text: #ecfdf5;
+      --muted: #9eb8ae;
+      --border: rgba(212, 175, 55, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.14), transparent 45%),
+                  radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.12), transparent 45%),
+                  var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: var(--gold-bright);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: rgba(7, 19, 14, 0.85);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--gold-bright);
+    }
+
+    .brand-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--emerald-bright), var(--gold-bright));
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.7);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: 0.95rem;
+    }
+
+    nav a {
+      color: var(--text);
+      opacity: 0.9;
+    }
+
+    nav a:hover {
+      color: var(--gold-bright);
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .hero {
+      background: linear-gradient(145deg, var(--bg-card), var(--bg-card-2));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 42px 30px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      margin-bottom: 36px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gold-bright);
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--emerald-bright);
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--emerald), #059669);
+      color: #ffffff;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold), #b38b1d);
+      color: #07130e;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #ffffff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--gold-bright);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+      color: var(--emerald-bright);
+      margin-bottom: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .cmd-card {
+      background: var(--bg-card-2);
+      border: 1px solid rgba(52, 211, 153, 0.22);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .cmd-name {
+      font-family: Consolas, monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--emerald-bright);
+      margin-bottom: 6px;
+    }
+
+    .cmd-desc {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    ol, ul {
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      color: var(--gold-bright);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    .dashboard-split {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    .dash-box {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .field-stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .dashboard-controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 11px 13px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg-dark);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--emerald-bright);
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 16px 0;
+    }
+
+    .rec-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .rec-timer {
+      font-family: Consolas, monospace;
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .clip-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .clip-item {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .clip-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .clip-meta strong {
+      color: var(--emerald-bright);
+    }
+
+    .clip-meta small {
+      display: block;
+      color: var(--muted);
+    }
+
+    .clip-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    audio {
+      width: 100%;
+      height: 36px;
+    }
+
+    .btn-small {
+      padding: 7px 12px;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 0.92rem;
+      color: var(--emerald-bright);
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 24px 20px 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-wrap">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>VocalClip</span>
+      </div>
+      <nav>
+        <a href="#istruzioni">Istruzioni</a>
+        <a href="#comandi">Comandi</a>
+        <a href="#dashboard">Dashboard Clip</a>
+        <a href="#contattaci">Contattaci</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="hero">
+      <div class="badge">Buffer Vocale Continuo · Ultimi 30 Secondi</div>
+      <h1>VocalClip</h1>
+      <p>
+        Il bot Discord che mantiene in memoria un buffer audio degli ultimi 30 secondi in chiamata
+        vocale e ti permette di salvare al volo i momenti migliori con <code>/clip</code>.
+      </p>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="https://discord.com/oauth2/authorize?client_id=1574770340956082267&scope=bot%20applications.commands&permissions=36700160" target="_blank" rel="noopener noreferrer">Aggiungi al server</a>
+        <a class="btn btn-gold" href="#dashboard">Apri Dashboard Clip</a>
+        <a class="btn btn-outline" href="https://linktr.ee/capitan_hammer" target="_blank" rel="noopener noreferrer">Social</a>
+      </div>
+    </div>
+
+    <section id="istruzioni">
+      <h2>Istruzioni d'uso</h2>
+      <ol>
+        <li>Entra in un canale vocale sul tuo server Discord.</li>
+        <li>Usa il comando <code>/join</code> per far entrare VocalClip e avviare il buffer continuo degli ultimi 30 secondi.</li>
+        <li>Quando succede qualcosa da ricordare, digita <code>/clip</code> per ricevere subito il file audio degli ultimi 30 secondi.</li>
+        <li>Quando hai finito la sessione, usa <code>/leave</code> per far uscire il bot e svuotare il buffer.</li>
+      </ol>
+    </section>
+
+    <section id="comandi">
+      <h2>Comandi Slash</h2>
+      <div class="grid-3">
+        <div class="cmd-card">
+          <div class="cmd-name">/join</div>
+          <div class="cmd-desc">Entra nel tuo canale vocale e avvia il buffer continuo degli ultimi 30 secondi.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">/clip</div>
+          <div class="cmd-desc">Salva e invia in chat il clip audio degli ultimi 30 secondi registrati in chiamata.</div>
+        </div>
+        <div class="cmd-card">
+          <div class="cmd-name">/leave</div>
+          <div class="cmd-desc">Fa uscire VocalClip dal canale vocale e ripulisce la memoria del buffer.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard">
+      <h2>Dashboard Clip · Upload &amp; Registrazione</h2>
+      <p style="color: var(--muted); margin-bottom: 18px;">
+        Carica i file audio ottenuti con <code>/clip</code> oppure registra una nuova clip vocale direttamente qui: le tue clip compaiono subito nella lista a fianco.
+      </p>
+
+      <div class="dashboard-split">
+        <div class="dash-box">
+          <h3>Carica o Registra Clip</h3>
+          <div class="field-stack">
+            <input type="text" id="clipTitle" placeholder="Titolo della clip (es. Momento epico)" />
+            <input type="file" id="clipFileInput" accept="audio/*" />
+            <button class="btn btn-primary" id="uploadClipBtn" type="button">Carica Clip Audio</button>
+          </div>
+
+          <hr class="divider" />
+
+          <h3>Oppure registra dal microfono</h3>
+          <div class="rec-row">
+            <button class="btn btn-gold" id="recordBtn" type="button">Registra Clip</button>
+            <span class="rec-timer" id="recStatus">Pronto</span>
+          </div>
+        </div>
+
+        <div class="dash-box">
+          <h3>Le tue Clip</h3>
+          <div class="clip-list" id="clipList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contattaci">
+      <h2>Contattaci</h2>
+      <p style="color: var(--muted); margin-bottom: 16px;">
+        Hai domande, segnalazioni o suggerimenti su <code>/join</code>, <code>/clip</code> e <code>/leave</code>? Scrivici qui sotto.
+      </p>
+      <form id="contactForm">
+        <div class="dashboard-controls" style="grid-template-columns: 1fr;">
+          <input type="email" id="senderEmail" required placeholder="La tua email" />
+          <textarea id="contactMessage" rows="4" required placeholder="Scrivi qui il tuo messaggio..."></textarea>
+        </div>
+        <button class="btn btn-gold" type="submit">Invia messaggio</button>
+        <div class="status-msg" id="contactStatus" aria-live="polite"></div>
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="https://capitanhammer.github.io/vocalclip-site/" target="_blank" rel="noopener noreferrer">Website</a>
+      <a href="https://linktr.ee/capitan_hammer" target="_blank" rel="noopener noreferrer">Social</a>
+      <a href="mailto:gcesa142@gmail.com">gcesa142@gmail.com</a>
+    </div>
+    <div>VocalClip · Comandi: /join, /clip, /leave</div>
+  </footer>
+
+  <script>
+    const STORAGE_KEY = "vocalclip_audio_clips_v2";
+    const DESTINATARIO_EMAIL = "gcesa142@gmail.com";
+
+    const clipTitleInput = document.getElementById("clipTitle");
+    const clipFileInput = document.getElementById("clipFileInput");
+    const uploadClipBtn = document.getElementById("uploadClipBtn");
+    const recordBtn = document.getElementById("recordBtn");
+    const recStatus = document.getElementById("recStatus");
+    const clipListEl = document.getElementById("clipList");
+
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let isRecording = false;
+    let recSeconds = 0;
+    let recTimerInterval = null;
+
+    function loadClips() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveClips(clips) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(clips));
+      } catch {
+        alert("Memoria del browser piena: elimina qualche vecchia clip prima di salvarne altre.");
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function addClipItem(title, sourceLabel, audioDataUrl) {
+      const clips = loadClips();
+      clips.unshift({
+        title,
+        source: sourceLabel,
+        date: new Date().toLocaleString("it-IT"),
+        audioUrl: audioDataUrl
+      });
+      saveClips(clips);
+      clipTitleInput.value = "";
+      clipFileInput.value = "";
+      renderClips();
+    }
+
+    function renderClips() {
+      const clips = loadClips();
+      if (!clips.length) {
+        clipListEl.innerHTML = `<p style="color: var(--muted);">Nessuna clip presente. Carica un file audio o registrane una a sinistra.</p>`;
+        return;
+      }
+
+      clipListEl.innerHTML = clips
+        .map(
+          (clip, index) => `
+          <div class="clip-item">
+            <div class="clip-top">
+              <div class="clip-meta">
+                <strong>${escapeHtml(clip.title)}</strong>
+                <small>${escapeHtml(clip.source)} · ${escapeHtml(clip.date)}</small>
+              </div>
+              <div class="clip-actions">
+                <a class="btn btn-outline btn-small" href="${clip.audioUrl}" download="${escapeHtml(clip.title)}.wav">Scarica</a>
+                <button class="btn btn-outline btn-small" type="button" onclick="deleteClip(${index})">Elimina</button>
+              </div>
+            </div>
+            <audio controls src="${clip.audioUrl}"></audio>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    function deleteClip(index) {
+      const clips = loadClips();
+      clips.splice(index, 1);
+      saveClips(clips);
+      renderClips();
+    }
+
+    uploadClipBtn.addEventListener("click", () => {
+      const file = clipFileInput.files && clipFileInput.files[0];
+      if (!file) {
+        clipFileInput.focus();
+        return;
+      }
+      const title = clipTitleInput.value.trim() || file.name.replace(/\.[^/.]+$/, "");
+      const reader = new FileReader();
+      reader.onload = () => {
+        addClipItem(title, "File caricato", reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    recordBtn.addEventListener("click", async () => {
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          recordedChunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) recordedChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+            stream.getTracks().forEach((t) => t.stop());
+            const blob = new Blob(recordedChunks, { type: "audio/webm" });
+            const reader = new FileReader();
+            reader.onload = () => {
+              const title = clipTitleInput.value.trim() || `Registrazione (${recSeconds}s)`;
+              addClipItem(title, "Registrazione microfono", reader.result);
+              recStatus.textContent = "Salvata!";
+            };
+            reader.readAsDataURL(blob);
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          recSeconds = 0;
+          recordBtn.textContent = "Ferma e Salva";
+          recordBtn.classList.remove("btn-gold");
+          recordBtn.classList.add("btn-danger");
+          recStatus.textContent = "Registrazione: 0s";
+
+          recTimerInterval = setInterval(() => {
+            recSeconds++;
+            recStatus.textContent = `Registrazione: ${recSeconds}s`;
+            if (recSeconds >= 30 && isRecording) {
+              recordBtn.click();
+            }
+          }, 1000);
+        } catch {
+          recStatus.textContent = "Permesso microfono negato o non disponibile.";
+        }
+      } else {
+        isRecording = false;
+        clearInterval(recTimerInterval);
+        recordBtn.textContent = "Registra Clip";
+        recordBtn.classList.remove("btn-danger");
+        recordBtn.classList.add("btn-gold");
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
+      }
+    });
+
+    const contactForm = document.getElementById("contactForm");
+    const contactStatus = document.getElementById("contactStatus");
+
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const sender = document.getElementById("senderEmail").value.trim();
+      const message = document.getElementById("contactMessage").value.trim();
+      if (!sender || !message) return;
+
+      const subject = encodeURIComponent(`VocalClip — Messaggio da ${sender}`);
+      const body = encodeURIComponent(`Da: ${sender}\n\n${message}`);
+      window.location.href = `mailto:${DESTINATARIO_EMAIL}?subject=${subject}&body=${body}`;
+      contactStatus.textContent = `Apertura client email verso ${DESTINATARIO_EMAIL}...`;
+    });
+
+    renderClips();
+  </script>
+</body>
+</html>
